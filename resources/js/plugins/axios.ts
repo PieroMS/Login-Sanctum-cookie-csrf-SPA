@@ -1,9 +1,10 @@
 import axios from 'axios';
-import router from '@/router';
+import Cookies from 'js-cookie'
+import router from '../router/index.js';
 
 // Configuración de Axios
 const client = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: 'http://login.test:8000',
   withCredentials: true, // Envía las cookies al servidor Laravel
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
@@ -12,36 +13,48 @@ const client = axios.create({
   }
 });
 
-// Errores globales como 401 o 419
+// Configurar interceptor para agregar el token a todas las peticiones
+client.interceptors.request.use(config => {
+  const token = Cookies.get('XSRF-TOKEN')
+  if (token) {
+    config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token)
+  }
+  return config
+})
+
+
 client.interceptors.response.use(
   response => response,
   async error => {
-    // Si el error es 401 (no autorizado)
+    const originalRequest = error.config;
+
     if (error.response?.status === 401) {
-      console.warn('No autorizado. Redirigiendo al login.')
-      router.push('/login')
+      console.warn('No autorizado. Redirigiendo al login.');
+      router.push('/login');
+      return;
     }
-    
-    // Si el error es 419 (CSRF token expirado)
-    if (error.response?.status === 419) {
-      console.warn('Token CSRF inválido. Obteniendo nuevo token...')
-      
+
+    if (error.response?.status === 419 && !originalRequest._retry) {
+      console.warn('Token CSRF inválido. Intentando renovar...');
+
+      originalRequest._retry = true; // Previene múltiples reintentos
+
       try {
-        // Obtener nuevo token CSRF
-        await axios.get(`${import.meta.env.VITE_API_URL}/sanctum/csrf-cookie`, { 
-          withCredentials: true 
-        })
-        
-        // Reintentar la solicitud original
-        return client(error.config)
+        await client.get('/sanctum/csrf-cookie', {
+          withCredentials: true
+        });
+
+        // Reintenta la solicitud original una sola vez
+        return client(originalRequest);
       } catch (retryError) {
-        console.error('Error al renovar token CSRF', retryError)
-        router.push('/login')
+        console.error('Error al renovar token CSRF', retryError);
+        router.push('/login');
       }
     }
-    
-    return Promise.reject(error)
+
+    return Promise.reject(error);
   }
 );
+
 
 export default client;

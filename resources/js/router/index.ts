@@ -23,22 +23,12 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const auth = useAuthStore()
 
-  // Solo intentar obtener el usuario si NO estás yendo al login
-  if (to.path !== '/login' && auth.user === null) {
-    try {
-      await auth.getUser()
-    } catch {
-      // Ignorar errores si no está autenticado
-    }
-  }
-
   // Si la ruta requiere auth y no hay usuario, redirige
   if (to.meta.requiresAuth && !auth.user) {
     return next('/login')
   }
 
-  next()
+  next() // deja que la navegación continúe como está
 })
-
 
 export default router

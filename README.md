@@ -16,7 +16,7 @@
 - **Rutas y Vistas**:
   - El componente `resources/js/App.vue` incluye un `router-view`, que actúa como un contenedor dinámico para las vistas. Estas vistas se renderizan según las rutas definidas en el archivo del router.
 
-## Instalación del proyecto:
+## Creación del proyecto:
 
 - `laravel new ...`
 - `composer require laravel/sanctum`

@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
 import client from '@/plugins/axios'
 
+// Se valida que se tenga el tipo de dato y la estructura
 interface User {
   id: number;
   name: string;
   email: string;
-  // [key: string]: any; // Para otros campos del usuario
 }
 
 interface AuthState {
@@ -15,17 +15,20 @@ interface AuthState {
 }
 
 export const useAuthStore = defineStore('auth', {
+  // Estado; en RAM; reactivo
   state: (): AuthState => ({
     user: null,
     loading: false,
     error: null
   }),
-  
+
+  // Valor computado (se el valor en base al valor del estado)
   getters: {
     isAuthenticated: (state) => !!state.user,
-    currentUser: (state) => state.user
+    currentUser: (state) => state.user,
   },
-  
+
+  // funciones para cambiar el estado (mutaciones)
   actions: {
     async login(email: string, password: string) {
       try {
@@ -67,5 +70,8 @@ export const useAuthStore = defineStore('auth', {
     clearErrors() {
       this.error = null
     }
-  }
+  },
+
+  // Habilitar persistencia
+  persist: true
 })
