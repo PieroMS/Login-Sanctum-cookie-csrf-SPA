@@ -23,26 +23,30 @@
 - `php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"`
 - `npm install vue@3 vue-router@4 pinia axios @vitejs/plugin-vue`
 - `npm i js-cookie`
+- `npm install pinia-plugin-persistedstate`
 - `npm install tailwindcss @tailwindcss/vite`
-- `composer require fruitcake/laravel-cors`
 - En bootsrtap/app.php:
   ```
-  ->withMiddleware(function (Middleware $middleware) {
-        // Configuramos el middleware para Sanctum
-        $middleware->alias([
-            'auth.sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-        ]);
-    })
+  $middleware->group('api', [
+      \Illuminate\Session\Middleware\StartSession::class,
+      \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+      \Illuminate\Cookie\Middleware\EncryptCookies::class,
+      \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+      \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
+      \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+  ]);
+
+  $middleware->alias([
+      'auth.sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+  ]);
   ```
 - En config/sanctum:
   ```
   'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
-          '%s%s',
-          'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
-          env('APP_URL') ? ','.parse_url(env('APP_URL'), PHP_URL_HOST) : ''
-          // Sanctum::currentApplicationUrlWithPort(),
-          // Sanctum::currentRequestHost(),
-      ))),
+        '%s%s',
+        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
+        env('APP_URL') ? ','.parse_url(env('APP_URL'), PHP_URL_HOST) : ''
+    ))),
   ```
 - En vite:
   ```
