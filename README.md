@@ -45,7 +45,7 @@ $middleware->alias([
 ]);
 ```
 
--En Cors:
+- En Cors:
 
 ```
 return [
@@ -119,7 +119,7 @@ Password: 12345678
 
 - Se usa Pinia como store principal.
 
--Se implementa pinia-plugin-persistedstate para mantener el estado entre recargas, se almacena en el localstorage.
+- Se implementa pinia-plugin-persistedstate para mantener el estado entre recargas, se almacena en el localstorage.
 
 ### 🌐 Axios Client
 
@@ -131,38 +131,38 @@ Password: 12345678
   - Petición del Cliente: GET /sanctum/csrf-cookie
 
   - Resultado:
-    -El servidor responde con cookies: XSRF-TOKEN (token CSRF) y laravel_session.
-    -Estas cookies se almacenan automáticamente en el navegador (withCredentials: activo).
-    -Es un paso obligatorio para que Laravel valide correctamente el CSRF en el login.
+    - El servidor responde con cookies: XSRF-TOKEN (token CSRF) y laravel_session.
+    - Estas cookies se almacenan automáticamente en el navegador (withCredentials: activo).
+    - Es un paso obligatorio para que Laravel valide correctamente el CSRF en el login.
 
 2. Login del usuario
   - Petición: POST /login
   - Headers: 
-    -'X-XSRF-TOKEN': Extraído desde la cookie XSRF-TOKEN, enviado manualmente usando un interceptor.
-    -'Content-Type': 'application/json'
-  -Resultado esperado:
-    -Si las credenciales son válidas:
-      -Laravel responde con código 204 o 200.
-      -El navegador mantiene la sesión mediante la cookie laravel_session.
-      -Redirección a la ruta protegida.
-    -Si las credenciales son inválidas:
-      -Laravel responde con código 422.
-      -Se muestra mensaje de error en el formulario.
+    - 'X-XSRF-TOKEN': Extraído desde la cookie XSRF-TOKEN, enviado manualmente usando un interceptor.
+    - 'Content-Type': 'application/json'
+  - Resultado esperado:
+    - Si las credenciales son válidas:
+      - Laravel responde con código 204 o 200.
+      - El navegador mantiene la sesión mediante la cookie laravel_session.
+      - Redirección a la ruta protegida.
+    - Si las credenciales son inválidas:
+      - Laravel responde con código 422.
+      - Se muestra mensaje de error en el formulario.
 
 3. Peticiones autenticadas
-  -Una vez logueado, cualquier petición GET, POST, etc., al backend incluirá automáticamente la cookie laravel_session (porque withCredentials: true está activo).
-  -Laravel identifica la sesión por cookie y retorna datos asociados al usuario autenticado.
+  - Una vez logueado, cualquier petición GET, POST, etc., al backend incluirá automáticamente la cookie laravel_session (porque withCredentials: true está activo).
+  - Laravel identifica la sesión por cookie y retorna datos asociados al usuario autenticado.
 
 4. Logout
-  -Petición: POST /logout
-  -Headers: Incluye el token CSRF (X-XSRF-TOKEN) de la misma forma que el login.
+  - Petición: POST /logout
+  - Headers: Incluye el token CSRF (X-XSRF-TOKEN) de la misma forma que el login.
   
-  -Resultado:
-    -Laravel destruye la sesión.
-    Las cookies siguen visibles en el navegador, pero la sesión ya no es válida.
-  -Frontend:
-    -Limpia el store de Pinia (usuario, tokens, flags de autenticación).
-    -Redirige a la pantalla de login.
+  - Resultado:
+    - Laravel destruye la sesión.
+    - Las cookies siguen visibles en el navegador, pero la sesión ya no es válida.
+  - Frontend:
+    - Limpia el store de Pinia (usuario, tokens, flags de autenticación).
+    - Redirige a la pantalla de login.
 
 ## 🛠️ Instalación y Ejecución del Proyecto
 
