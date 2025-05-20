@@ -87,9 +87,8 @@ const error = computed(() => auth.error)
 const handleLogin = async () => {
   try {
     await auth.login(email.value, password.value, remember.value)
-      router.push('/') // Redirige a la página de inicio tras login
+      router.push('/')
     } catch (error) {
-      // El manejo de errores ya está en el store
       console.error('Error de login:', error)
     }
 }

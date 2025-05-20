@@ -22,7 +22,6 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'auth.sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            'cors' => \Illuminate\Http\Middleware\HandleCors::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
