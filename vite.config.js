@@ -18,9 +18,5 @@ export default defineConfig({
             '@': path.resolve(__dirname, './resources/js'),
             '~': path.resolve(__dirname, './resources'),
         },
-    },
-    server: {
-        host: 'login.test',
-        port: 5173
-        }
+    }
 });
